@@ -18,12 +18,12 @@ const Auth = () => {
   }, [auth.isAuthenticated, next])
 
   return (
-    <main className="bg-[url('/images/bg-auth.svg')] bg-cover min-h-screen flex items-center justify-center">
+    <main className="bg-slate-900 min-h-screen flex items-center justify-center">
       <div className="gradient-border shadow-lg">
-        <section className="flex flex-col gap-8 bg-white rounded-2xl p-10">
+        <section className="flex flex-col gap-8 bg-slate-800 rounded-xl p-10 border border-slate-700">
           <div className="flex flex-col items-center gap-2 text-center">
-            <h1>Welcome</h1>
-            <h2>Log In to Continue Your Job Journey</h2>
+            <h1 className="text-white">Welcome</h1>
+            <h2 className="text-gray-300">Log In to Continue Your Job Journey</h2>
           </div>
           <div>
             {isLoading ? (
