@@ -25,7 +25,7 @@ declare global {
           imageURL?: string | PuterChatOptions,
           testMode?: boolean,
           options?: PuterChatOptions
-        ) => Promise<Object>;
+        ) => Promise<AIResponse>;
         img2txt: (
           image: string | File | Blob,
           testMode?: boolean
@@ -104,15 +104,6 @@ export const usePuterStore = create<PuterStore>((set, get) => {
     set({
       error: msg,
       isLoading: false,
-      auth: {
-        user: null,
-        isAuthenticated: false,
-        signIn: get().auth.signIn,
-        signOut: get().auth.signOut,
-        refreshUser: get().auth.refreshUser,
-        checkAuthStatus: get().auth.checkAuthStatus,
-        getUser: get().auth.getUser,
-      },
     });
   };
 
@@ -131,12 +122,9 @@ export const usePuterStore = create<PuterStore>((set, get) => {
         const user = await puter.auth.getUser();
         set({
           auth: {
+            ...get().auth,
             user,
             isAuthenticated: true,
-            signIn: get().auth.signIn,
-            signOut: get().auth.signOut,
-            refreshUser: get().auth.refreshUser,
-            checkAuthStatus: get().auth.checkAuthStatus,
             getUser: () => user,
           },
           isLoading: false,
@@ -145,12 +133,9 @@ export const usePuterStore = create<PuterStore>((set, get) => {
       } else {
         set({
           auth: {
+            ...get().auth,
             user: null,
             isAuthenticated: false,
-            signIn: get().auth.signIn,
-            signOut: get().auth.signOut,
-            refreshUser: get().auth.refreshUser,
-            checkAuthStatus: get().auth.checkAuthStatus,
             getUser: () => null,
           },
           isLoading: false,
@@ -196,12 +181,9 @@ export const usePuterStore = create<PuterStore>((set, get) => {
       await puter.auth.signOut();
       set({
         auth: {
+          ...get().auth,
           user: null,
           isAuthenticated: false,
-          signIn: get().auth.signIn,
-          signOut: get().auth.signOut,
-          refreshUser: get().auth.refreshUser,
-          checkAuthStatus: get().auth.checkAuthStatus,
           getUser: () => null,
         },
         isLoading: false,
@@ -225,12 +207,9 @@ export const usePuterStore = create<PuterStore>((set, get) => {
       const user = await puter.auth.getUser();
       set({
         auth: {
+          ...get().auth,
           user,
           isAuthenticated: true,
-          signIn: get().auth.signIn,
-          signOut: get().auth.signOut,
-          refreshUser: get().auth.refreshUser,
-          checkAuthStatus: get().auth.checkAuthStatus,
           getUser: () => user,
         },
         isLoading: false,
@@ -321,10 +300,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
       setError("Puter.js not available");
       return;
     }
-    // return puter.ai.chat(prompt, imageURL, testMode, options);
-    return puter.ai.chat(prompt, imageURL, testMode, options) as Promise<
-      AIResponse | undefined
-    >;
+    return puter.ai.chat(prompt, imageURL, testMode, options);
   };
 
   const feedback = async (path: string, message: string) => {

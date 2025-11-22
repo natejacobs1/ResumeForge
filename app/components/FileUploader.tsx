@@ -7,24 +7,28 @@ interface FileUploaderProps {
 }
 
 const FileUploader = ({ onFileSelect }: FileUploaderProps) => {
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    const file = acceptedFiles[0] || null;
+  const [file, setFile] = useState<File | null>(null);
 
-    onFileSelect?.(file);
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const selectedFile = acceptedFiles[0] || null;
+    setFile(selectedFile);
+    onFileSelect?.(selectedFile);
   }, [onFileSelect]);
 
   const maxFileSize = 20 * 1024 * 1024; // 20MB in bytes
 
-  const {getRootProps, getInputProps, isDragActive, acceptedFiles} = useDropzone({
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({
     onDrop,
     multiple: false,
     accept: { 'application/pdf': ['.pdf']},
     maxSize: maxFileSize,
   })
 
-  const file = acceptedFiles[0] || null;
-
-
+  const handleRemoveFile = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setFile(null);
+    onFileSelect?.(null);
+  };
 
   return (
     <div className="w-full gradient-border">
@@ -45,14 +49,12 @@ const FileUploader = ({ onFileSelect }: FileUploaderProps) => {
                   </p>
                 </div>
               </div>
-              <button className="p-2 cursor-pointer" onClick={(e) => {
-                onFileSelect?.(null)
-              }}>
+              <button className="p-2 cursor-pointer" onClick={handleRemoveFile}>
                 <img src="/icons/cross.svg" alt="remove" className="w-4 h-4" />
               </button>
             </div>
           ): (
-            <div>
+            <div className="uploader-idle">
               <div className="mx-auto w-16 h-16 flex items-center justify-center mb-2">
                 <img src="/icons/info.svg" alt="upload" className="size-20" />
               </div>
